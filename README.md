@@ -1,2 +1,2 @@
 
-skv is a distributed key-value database based on leveldb.
+Skv is a key-value database based on leveldb.
