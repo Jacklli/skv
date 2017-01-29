@@ -20,12 +20,22 @@ const S_SET    =   3;  // set data type
 const S_SSET   =   4;  // sorted set data type
 const S_HASH   =   5;  // hash data type
 
+const ENCOD_RAW  =  1; // no encoding
+const ENCOD_ZIP  =  2; // zip encoding
+
 class sObject: boost::noncopyable {
   public:
-    explict sObject() {};
-    ~sObject() {};
-    decrRefCount();
-    incrRefCount();
+    explict sObject(unsigned type, char *ptr)
+      : type(type),
+        encoding(ENCOD_RAW),
+        refcount(0),
+        ptr(ptr) {}
+    ~sObject() {}
+    int getLen();
+    int getEncoding();
+    bool chgEncoding(int coding);
+    bool decrRefCount();
+    bool incrRefCount();
     
   private:
     unsigned type:4;

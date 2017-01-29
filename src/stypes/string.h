@@ -16,12 +16,16 @@ namespace stypes {
 
 class stringObject: sObject {
   public:
-    explict stringObject() {
-      type = S_STRING;    // string type
-    }
+    explict stringObject(void *ptr)
+      : obj_(new sObject(S_STRING, ptr)) {}
     ~stringObject();
-    bool initStringObject(String &);
     int getStringObjectlen() const;
+    int getStringEncoding() const;
+    bool chgStringEncoding();
+    bool decrStringRefCount();
+    bool incrStringRefCount();
+  private:
+    sObject obj_;
 };
 
 
