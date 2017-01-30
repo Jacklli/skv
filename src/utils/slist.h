@@ -17,7 +17,7 @@ typedef class listNode {
     friend class list;
     explicit listNode(void *val)
       : value(val) {}
-    ~listNode();
+    ~listNode() { free(value); }
     listNode *listPrevNode() { return prev; }
     listNode *listNextNode() { return next; }
     void *listNodeValue() { return value; }
@@ -32,12 +32,15 @@ typedef class list {
   public:
     explicit list() { len = 0; head = NULL; tail = NULL: } 
     ~list();
-    int listLen() { return len; }
+    int getListLen() { return len; }
     listNode *listFirst() { return head; }
     listNode *listLast() { return tail; }
-    listNode *listSearchKey(void &key);
-    bool listAddNodeTail(void &key);
-    bool listDelNode(void *key);
+    listNode *listSearchKey(const void& key);
+    bool listAddNodeTail(const void& key);
+    bool listAddNodeHead(const void& key);
+    bool listDelNode(const void& key);
+    String& listLPop();
+    String& listRPop();
 
   private:
     listNode *head;

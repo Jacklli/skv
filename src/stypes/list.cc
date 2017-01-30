@@ -6,8 +6,47 @@
 * Author: Liyinlong (yinlong.lee at hotmail.com)
 */
 
+
+bool listObject::listPush(String& entry, int dirtion) {
+  if(direction == LEFT) {
+    static_cast<list>(obj_.ptr)->listAddNodeHead(entry);
+    return true;
+  } else if (direction == RIGHT) {
+    static_cast<list>(obj_.ptr)->listAddNodeTail(entry);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+String& listObject::listPop(int dirtion) {
+  if(direction == LEFT) {
+    return static_cast<list>(obj_.ptr)->listLPop();
+  } else if (direction == RIGHT) {
+    return static_cast<list>(obj_.ptr)->listRPop();
+  } else { // exception, how to hanlde it?
+    return NULL;
+  }
+}
+
+bool listObject::lPush(String& entry) {
+  return listPush(entry, LEFT);
+}
+
+bool listObject::rPush(String& entry) {
+  return listPush(entry, RIGHT);
+}
+
+String& listObject::lPop() {
+  return listPop(LEFT);
+}
+
+String& listObject::rPop() {
+  return listPop(RIGHT);
+}
+
 int listObject::getListObjectlen() const {
-  return lst_.getLen();
+  return (static_cast<list>(obj_.ptr))->getListLen();
 }
 
 List listObject::getListEncoding() const {
@@ -25,28 +64,3 @@ bool listObject::decrListRefCount() {
 bool listObject::incrListRefCount() {
   return obj_.incrRefCount();
 }
-
-bool listObject::listPush(String &entry, int dirtion) {
-  return lst_->listPush(lst_, entry, dirtion);
-}
-
-bool listObject::listPop(int dirtion) {
-  return lst_->listPop(lst_, dirtion);
-}
-
-bool listObject::lPush(String &entry) {
-  return lst_->listPush(entry, LEFT);
-}
-
-bool listObject::rPush(String &entry) {
-  return lst_->listPush(entry, RIGHT);
-}
-
-String& listObject::lPop() {
-  return lst_->listPop(LEFT);
-}
-
-String& listObject::rPop() {
-  return lst_->listPop(RIGHT);
-}
-

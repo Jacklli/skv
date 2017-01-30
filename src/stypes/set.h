@@ -15,7 +15,7 @@ namespace stypes {
 
 class setObject: sObject {
   public:
-    explict setObject() {
+    explicit setObject() {
       type = S_SET;    // set type
     }
     ~setObject();

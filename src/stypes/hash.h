@@ -15,7 +15,7 @@ namespace stypes {
 
 class hashObject: sObject {
   public:
-    explict hashObject() {
+    explicit hashObject() {
       type = S_HASH;    // hash type
     }
     ~hashObject();

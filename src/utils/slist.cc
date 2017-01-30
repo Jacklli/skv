@@ -6,8 +6,15 @@
 * Author: Liyinlong (yinlong.lee at hotmail.com)
 */
 
+~list::list() {
+  listNode *node = head;
+  while(node != NULL) {
+    delete node;
+    node = node->next;
+  }
+}
 
-listNode *list::listSearchKey(const &key) {
+listNode *list::listSearchKey(const void& key) {
   listNode *node = head;
   while(node != NULL) {
     if(strcmp(node->value, key) == 0) {
@@ -20,7 +27,7 @@ listNode *list::listSearchKey(const &key) {
   return NULL;
 }
 
-bool list::listAddNodeTail(void &key) {
+bool list::listAddNodeTail(const void& key) {
   if(0 == len) {
     head = tail = new listNode(key);
     head->next = NULL;
@@ -39,7 +46,7 @@ bool list::listAddNodeTail(void &key) {
   return true;
 }
 
-bool list::listDelNode(void &key) {
+bool list::listDelNode(const void& key) {
   listNode *node = head;
   while(node != NULL) {
     if(strcmp(node->value, key) == 0) {
@@ -49,17 +56,17 @@ bool list::listDelNode(void &key) {
     }
   }
   if(strcmp(node->value, head->value) == 0) {
-    if(1 == listLen()) { // there's only a head node in list
+    if(1 == getListLen()) { // there's only a head node in list
       delete node;
       head = tail = node = NULL;
       len--;
-    } else if(2 == listLen()) {
+    } else if(2 == getListLen()) {
       head = head->next; //it implies head->next is NULL now!
       delete node;
       node = NULL;
       tail = head;
       len--;
-    } else if(2 < listLen()) {
+    } else if(2 < getListLen()) {
       (node->prev)->next = node->next;
       delete node;
       node = NULL;

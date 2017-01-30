@@ -16,7 +16,7 @@ namespace stypes {
 
 class stringObject: sObject {
   public:
-    explict stringObject(void *ptr)
+    explicit stringObject(void *ptr)
       : obj_(new sObject(S_STRING, ptr)) {}
     ~stringObject();
     int getStringObjectlen() const;
@@ -24,6 +24,7 @@ class stringObject: sObject {
     bool chgStringEncoding();
     bool decrStringRefCount();
     bool incrStringRefCount();
+
   private:
     sObject obj_;
 };

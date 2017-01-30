@@ -16,23 +16,23 @@ namespace stypes {
 
 class listObject: sObject {
   public:
-    explict listObject(void *ptr)
-      : obj_(new sObject(S_list, ptr)) {}
+    explicit listObject(void *ptr)
+      : obj_(new sObject(S_LIST, new list())) {}
     ~listObject();
     int getListObjectlen() const;
     int getListEncoding() const;
     bool chgListEncoding();
     bool decrListRefCount();
     bool incrListRefCount();
-    bool lPush(String &entry);
-    bool rPush(String &entry);
+    bool lPush(String& entry);
+    bool rPush(String& entry);
     String& lPop();
     String& rPop();
+
   private:
-    bool listPush(String &entry, int dirtion);
+    bool listPush(String& entry, int dirtion);
     String& listPop(int dirtion);
     sObject obj_;
-    list *lst_;
 };
 
 

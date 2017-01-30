@@ -7,25 +7,21 @@
 */
 
 
-int stringObject::getStringObjectlen() const {
-  return strlen(static_cast<char *>(ptr));
-}
-
-int tringObject::getStringEncoding() const {
+int sObject::getEncoding() const {
   return encoding;
 }
 
-bool stringObject::chgStringEncoding(int coding) {
+bool sObject::chgEncoding(int coding) {
   encoding = coding;
   return true; 
 }
 
-bool stringObject::decrStringRefCount() {
+bool sObject::decrRefCount() {
   refcount--;
   return true;
 }
 
-bool stringObject::incrStringRefCount() {
+bool sObject::incrRefCount() {
   refcount++;
   return true;
 }

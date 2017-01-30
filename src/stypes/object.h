@@ -25,13 +25,12 @@ const ENCOD_ZIP  =  2; // zip encoding
 
 class sObject: boost::noncopyable {
   public:
-    explict sObject(unsigned type, char *ptr)
+    explicit sObject(unsigned type, void *ptr)
       : type(type),
         encoding(ENCOD_RAW),
         refcount(0),
         ptr(ptr) {}
     ~sObject() {}
-    int getLen();
     int getEncoding();
     bool chgEncoding(int coding);
     bool decrRefCount();

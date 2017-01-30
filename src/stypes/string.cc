@@ -7,7 +7,7 @@
 */
 
 int stringObject::getStringObjectlen() const {
-  return obj_.getLen();
+  return strlen(static_cast<char *>(obj_->ptr));
 }
 
 String stringObject::getStringEncoding() const {
