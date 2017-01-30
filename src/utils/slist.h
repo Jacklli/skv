@@ -15,30 +15,30 @@ namespace skv {
 typedef class listNode {
   public:
     friend class list;
-    explicit listNode(void *val)
+    explicit listNode(String& val)
       : value(val) {}
-    ~listNode() { free(value); }
-    listNode *listPrevNode() { return prev; }
-    listNode *listNextNode() { return next; }
-    void *listNodeValue() { return value; }
+    ~listNode() { delete value; }
+    listNode *listPrevNode() const { return prev; }
+    listNode *listNextNode() const { return next; }
+    String& listNodeValue() const { return value; }
 
   private:
     class listNode *prev;
     class listNode *next;
-    void *value;
+    String& value;
 } listNode;
 
 typedef class list {
   public:
-    explicit list() { len = 0; head = NULL; tail = NULL: } 
+    explicit list() { len = 0; head = NULL; tail = NULL; } 
     ~list();
     int getListLen() { return len; }
     listNode *listFirst() { return head; }
     listNode *listLast() { return tail; }
-    listNode *listSearchKey(const void& key);
-    bool listAddNodeTail(const void& key);
-    bool listAddNodeHead(const void& key);
-    bool listDelNode(const void& key);
+    listNode *listSearchKey(const String& key);
+    bool listAddNodeTail(const String& key);
+    bool listAddNodeHead(const String& key);
+    bool listDelNode(const String& key);
     String& listLPop();
     String& listRPop();
 
