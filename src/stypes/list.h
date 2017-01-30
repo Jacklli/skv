@@ -16,7 +16,7 @@ namespace stypes {
 
 class listObject: sObject {
   public:
-    explicit listObject(void *ptr)
+    explicit listObject()
       : obj_(new sObject(S_LIST, new list())) {}
     ~listObject();
     int getListObjectlen() const;

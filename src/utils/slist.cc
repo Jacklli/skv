@@ -6,7 +6,7 @@
 * Author: Liyinlong (yinlong.lee at hotmail.com)
 */
 
-~list::list() {
+list::~list() {
   listNode *node = head;
   while(node != NULL) {
     delete node;

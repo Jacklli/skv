@@ -6,6 +6,7 @@
 * Author: Liyinlong (yinlong.lee at hotmail.com)
 */
 
+
 #ifndef __HASH_H__
 #define __HASH_H__
 
@@ -13,14 +14,24 @@
 
 namespace stypes {
 
-class hashObject: sObject {
+class hashObject {
   public:
-    explicit hashObject() {
-      type = S_HASH;    // hash type
-    }
+    explicit hashObject()
+      : obj_(new sObject(S_HASH, new hash())) {}
     ~hashObject();
+    int getHashObjSize() const;
+    int getHashObjEncoding() const;
+    bool chgHashObjEncoding();
+    bool decrHashObjRefCount();
+    bool incrHashObjRefCount();
+    bool addHashObjEntry(String& key, String& value);
+    bool delHashObjEntry(String& key);
+
+  private:
+    sObject obj_;
 };
+
 
 }
 
-#endif //__HASH_H__
+#endif // __HASH_H__
