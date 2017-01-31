@@ -30,7 +30,7 @@ typedef class hashEntry {
 
 typedef class hash {
   public:
-    explicit hash() { size = 0; } 
+    explicit hash(size_);
     ~hash();
     int getHashSize() { return size; }
     hashEntry *hashSearchKey(const String& key);
@@ -38,13 +38,18 @@ typedef class hash {
     bool hashDelEntry(const String& key);
 
   private:
+    unsigned int doHashKey(String& key);
+    bool doExpand(unsigned long size);
+    bool hashExpandIfNeeded();
     hashEntry **table;
     unsigned long size;
-    unsigned long sizemask;
+    unsigned long sizeMask;
     unsigned long used;
 } hash;
 
-}
+bool doRehash(hash& oldHt, hash& newHt);
+bool hashExpandIfNeeded(hash& ht);
+
 
 #endif // __SHASH_H__
 
