@@ -10,22 +10,26 @@
 #ifndef __SLIST_H__
 #define __SLIST_H__
 
+#include <string>
+
 namespace skv {
+
+class list;
 
 typedef class listNode {
   public:
     friend class list;
-    explicit listNode(String& val)
+    explicit listNode(std::string *val)
       : value(val) {}
     ~listNode() { delete value; }
     listNode *listPrevNode() const { return prev; }
     listNode *listNextNode() const { return next; }
-    String& listNodeValue() const { return value; }
+    std::string *listNodeValue() const { return value; }
 
   private:
     class listNode *prev;
     class listNode *next;
-    String& value;
+    std::string *value;
 } listNode;
 
 typedef class list {
@@ -35,12 +39,12 @@ typedef class list {
     int getListLen() { return len; }
     listNode *listFirst() { return head; }
     listNode *listLast() { return tail; }
-    listNode *listSearchKey(const String& key);
-    bool listAddNodeTail(const String& key);
-    bool listAddNodeHead(const String& key);
-    bool listDelNode(const String& key);
-    String& listLPop();
-    String& listRPop();
+    listNode *listSearchKey(const std::string *key);
+    bool listAddNodeTail(std::string *key);
+    bool listAddNodeHead(const std::string *key);
+    bool listDelNode(std::string *key);
+    std::string *listLPop();
+    std::string *listRPop();
 
   private:
     listNode *head;
