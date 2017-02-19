@@ -6,13 +6,22 @@
 * Author: Liyinlong (yinlong.lee at hotmail.com)
 */
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <iostream>
+#include <string>
+#include <functional>
+#include "shash.h"
+
+
+using namespace skv;
 
 hashEntry::~hashEntry() {
   delete key;
   delete value;
 }
 
-hash::hash(size_) {
+hash::hash(unsigned long size_) {
   table = static_cast<hashEntry **>(malloc(size_*sizeof(hashEntry)));
   size = size_;
 }
@@ -20,6 +29,7 @@ hash::hash(size_) {
 hash::~hash() {
   unsigned long idx = 0;
   hashEntry *entry = NULL, *nextEntry = NULL;
+
   while(idx < size) {
     entry = table[idx];
     while(entry != NULL ) {
@@ -32,7 +42,7 @@ hash::~hash() {
   free(table);
 }
 
-hashEntry *hash::hashSearchKey(const String& key) {
+hashEntry *hash::hashSearchKey(std::string *key) {
   unsigned long idx = 0;
   hashEntry *entry = NULL;
   while(idx < size) {
@@ -46,39 +56,84 @@ hashEntry *hash::hashSearchKey(const String& key) {
   return NULL;
 }
 
-unsigned int hash::doHashKey(String& key) {
-  unsigned int idx = 0, hval;
-  std::hash<std::string> h;
-  hval = h(key);
-  idx = hval & sizeMask;
+
+unsigned int hash::doHashKey(std::string *key) {
+  unsigned int idx = 0;
+  unsigned int len = key->length();
+
+  // Mix 4 bytes at a time into the hash 
+  const char *data = key->c_str();
+
+
+  // 'm' and 'r' are mixing constants generated offline.
+  //  They're not really 'magic', they just happen to work well.  
+  uint32_t seed = hash_function_seed;
+  const uint32_t m = 0x5bd1e995;
+  const int r = 24;
+
+  // Initialize the hash to a 'random' value 
+  uint32_t h = seed ^ len;
+
+  while(len >= 4) {
+    uint32_t k = *(uint32_t*)data;
+    
+    k *= m;
+    k ^= k >> r;
+    k *= m;
+    
+    h *= m;
+    h ^= k;
+    
+    data += 4;
+    len -= 4;
+  }   
+
+  // Handle the last few bytes of the input array  
+  switch(len) { 
+    case 3: h ^= data[2] << 16;
+    case 2: h ^= data[1] << 8;
+    case 1: h ^= data[0]; h *= m;
+  };
+
+  // Do a few final mixes of the hash to ensure the last few
+  //   bytes are well-incorporated. 
+  h ^= h >> 13;
+  h *= m;
+  h ^= h >> 15;
+
+  idx = (unsigned int)h & sizeMask; // & operator to get idx
+
   return idx;
 }
 
 
-bool hash::hashAddEntry(const String& key, const String& value) {
+bool hash::hashAddEntry(std::string *key, std::string *value) {
   unsigned long idx = 0;
   hashEntry *entry = new hashEntry(key, value);
-
   
   return true;
 }
 
-bool hash::hashDelEntry(const String& key) {
-  /*
-    TODO
-  */
+bool hash::hashDelEntry(const std::string *key) {
+
+// todo
+
 }
 
-bool doRehash(hash& oldHt, hash& newHt) {
+std::string *hash::getHashValue(std::string *key) {
+  return hashSearchKey(key)->hashEntryKey();
+}
+
+bool doRehashefk(hash *oldHt, hash *newHt) {
   unsigned long idx = 0;
   bool ret = true;
   hashEntry *entry = NULL, *nextEntry = NULL;
-  while(idx < oldHt.size) {
-    entry = (oldHt.table)[idx];
+  while(idx < oldHt->getHashSize()) {
+    entry = (oldHt->getHashTable())[idx];
     while(entry != NULL ) {
-      nextEntry = entry->next;
-      if(!(newHt.hashAddEntry(entry->key, entry->value))) {
-        cout<<"reHashing err occured!"<<end;
+      nextEntry = entry->hashNextEntry();
+      if(!(newHt->hashAddEntry(entry->hashEntryKey(), entry->hashEntryValue()))) {
+        std::cout<<"reHashing err occured!"<< std::endl;
         return false;
       }
       entry = nextEntry;
@@ -90,14 +145,13 @@ bool doRehash(hash& oldHt, hash& newHt) {
   return true;
 }
 
-bool hashExpandIfNeeded(hash& ht) {
+bool hashExpandIfNeeded(hash *ht) {
   unsigned int newSize = 0;
-  if(ht.used >= ht.size) {
-    newSize = (ht.size)*2
-    hash& newHt = new hash(newSize);
-    return doRehash(ht, newHt);
+  if(ht->getHashUsed() >= ht->getHashSize()) {
+    newSize = ht->getHashSize() * 2;
+    hash *newHt = new hash(newSize);
+    return doRehashefk(ht, newHt);
   }
+
   return true;  // no need to expand hash table
 }
-
-

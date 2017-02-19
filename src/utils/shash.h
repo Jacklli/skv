@@ -10,45 +10,57 @@
 #ifndef __SHASH_H__
 #define __SHASH_H__
 
+#include <string> 
+#include "stdint.h"
+
 namespace skv {
+
+class hash;
 
 typedef class hashEntry {
   public:
     friend class hash;
-    explicit hashEntry(String& key_, String& val)
+    explicit hashEntry(std::string *key_,std::string *val)
       : key(key_), 
         value(val) {}
     ~hashEntry();
     hashEntry *hashNextEntry() const { return next; }
-    String& hashEntryValue() const { return value; }
+    std::string *hashEntryKey() const { return key; }
+    std::string *hashEntryValue() const { return value; }
 
   private:
-    String& key;
-    String& value;
+    std::string *key;
+    std::string *value;
     class hashEntry *next;
 } hashEntry;
 
 typedef class hash {
   public:
-    explicit hash(size_);
+    explicit hash(unsigned long size_);
     ~hash();
     int getHashSize() { return size; }
-    hashEntry *hashSearchKey(const String& key);
-    bool hashAddEntry(const String& key, const String& value);
-    bool hashDelEntry(const String& key);
+    hashEntry **getHashTable() { return table; }
+    hashEntry *hashSearchKey(std::string *key);
+    bool hashAddEntry(std::string *key, std::string *value);
+    bool hashDelEntry(const std::string *key);
+    std::string *getHashValue(std::string *key);
+    unsigned long getHashUsed() { return used; };
 
   private:
-    unsigned int doHashKey(String& key);
+    unsigned int doHashKey(std::string *key);
     bool doExpand(unsigned long size);
-    bool hashExpandIfNeeded();
     hashEntry **table;
+    const static uint32_t hash_function_seed = 5381;  // got from redis
     unsigned long size;
     unsigned long sizeMask;
     unsigned long used;
 } hash;
 
-bool doRehash(hash& oldHt, hash& newHt);
-bool hashExpandIfNeeded(hash& ht);
+
+bool doRehash(hash *oldHt, hash *newHt);
+bool hashExpandIfNeeded(hash *ht);
+
+}
 
 
 #endif // __SHASH_H__

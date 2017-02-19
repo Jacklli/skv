@@ -1,8 +1,7 @@
-
 #include <stdlib.h>
 #include <iostream>
 
-#include "slist.h"
+#include "shash.h"
 
 int main() {
   std::string *str_ =  new std::string("abc");
