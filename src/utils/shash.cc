@@ -24,6 +24,7 @@ hashEntry::~hashEntry() {
 hash::hash(unsigned long size_) {
   table = static_cast<hashEntry **>(malloc(size_*sizeof(hashEntry)));
   size = size_;
+  sizeMask = size - 1;
 }
 
 hash::~hash() {
@@ -63,7 +64,6 @@ unsigned int hash::doHashKey(std::string *key) {
 
   // Mix 4 bytes at a time into the hash 
   const char *data = key->c_str();
-
 
   // 'm' and 'r' are mixing constants generated offline.
   //  They're not really 'magic', they just happen to work well.  
@@ -110,6 +110,17 @@ unsigned int hash::doHashKey(std::string *key) {
 bool hash::hashAddEntry(std::string *key, std::string *value) {
   unsigned long idx = 0;
   hashEntry *entry = new hashEntry(key, value);
+  idx = doHashKey(key);
+  hashEntry *tmpEntry = table[idx];
+  if(tmpEntry != NULL) {
+    while(tmpEntry->next != NULL) {
+      tmpEntry = tmpEntry->next;
+    }
+    tmpEntry->next = entry;
+  } else {
+    table[idx] = entry;
+  }
+//  std::cout<<idx<<std::endl;
   
   return true;
 }
@@ -121,7 +132,7 @@ bool hash::hashDelEntry(const std::string *key) {
 }
 
 std::string *hash::getHashValue(std::string *key) {
-  return hashSearchKey(key)->hashEntryKey();
+  return hashSearchKey(key)->hashEntryValue();
 }
 
 bool doRehashefk(hash *oldHt, hash *newHt) {

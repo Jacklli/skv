@@ -3,4 +3,4 @@ testslist:
 testshash:
 	g++ -g ../shash.cc testshash.cc -I ../
 clean:
-	rm *.out
+	rm -rf *.out core
