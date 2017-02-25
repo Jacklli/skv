@@ -4,32 +4,38 @@
 #include <time.h>
 #include "shash.h"
 
+const int keyNums = 1000;
 
 int main() {
-  std::string *key =  NULL;
-  std::string *value = NULL;
-  skv::hash *ht = new skv::hash(3);
+  std::string *key[10] =  { NULL };
+  std::string *value[10] = { NULL };
+  skv::hash *ht = new skv::hash(30);
   bool ret = true;
 
   srand(time(NULL));
-  for(int i=0; i<10; i++) {
-    key = new std::string(std::to_string(rand()));
-    value = new std::string(std::to_string(rand()));
+  for(int i=0; i<keyNums; i++) {
+    key[i] = new std::string(std::to_string(rand()));
+    value[i] = new std::string(std::to_string(rand()));
     std::cout<<"i = "<<i<<std::endl;
-    std::cout<<"the key we added is:"<<key->data()<<std::endl;
-    std::cout<<"the value we added is:"<<value->data()<<std::endl;
+    std::cout<<"the key[i] we added is:"<<key[i]->data()<<std::endl;
+    std::cout<<"the value[i] we added is:"<<value[i]->data()<<std::endl;
 
-    ht->hashAddEntry(key, value);
-    std::string *val = NULL;
-    val = ht->getHashValue(key);
-    if(val) {
-      std::cout<<"the value from key we got is:"<<*val<<std::endl;
-    } else {
-      std::cout<<"don't found such key"<<std::endl;
-    }
     ht = hashExpandIfNeeded(ht);
+    ht->hashAddEntry(key[i], value[i]);
   }
+  std::cout<<"the size of hash table is:"<<ht->getHashSize()<<std::endl;
   std::cout<<"the entries used from hash table is:"<<ht->getHashUsed()<<std::endl;
+  for(int i=0; i<keyNums; i++) {
+    std::cout<<"i = "<<i<<std::endl;
+    std::string *val = NULL;
+    val = ht->getHashValue(key[i]);
+    if(val) {
+      std::cout<<"the value[i] from key[i] we got is:"<<*val<<std::endl;
+    } else {
+      std::cout<<"don't found such key[i]"<<std::endl;
+    }
+  }
 
+  clearHashResource(ht);
   return 1;
 }
