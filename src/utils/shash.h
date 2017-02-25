@@ -46,6 +46,7 @@ typedef class hash {
     bool hashDelEntry(const std::string *key);
     std::string *getHashValue(std::string *key);
     unsigned long getHashUsed() { return used; };
+    bool decrHashUsed() { used--; };
 
   private:
     unsigned int doHashKey(std::string *key);
@@ -60,6 +61,8 @@ typedef class hash {
 
 }
 
+
+bool clearHashResource(skv::hash *ht);
 skv::hash *doRehash(skv::hash *oldHt, skv::hash *newHt);
 skv::hash *hashExpandIfNeeded(skv::hash *ht);
 

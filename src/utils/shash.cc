@@ -30,27 +30,17 @@ hash::hash(unsigned long size_) {
   }
   size = size_;
   sizeMask = size - 1;
+  used = 0;
 }
 
 hash::~hash() {
-  unsigned long idx = 0;
-  hashEntry *entry = NULL, *nextEntry = NULL;
-
-  while(idx < size) {
-    entry = table[idx];
-    while(entry != NULL) {
-      if(entry->next) {
-        nextEntry = entry->next;
-      }
-      delete entry;
-      entry = nextEntry;
-      nextEntry = NULL;
-    }
-    idx++;
-  }
   free(table);
 }
 
+/*
+ * idx function is mainly copyed from redis, there may be 
+ * some hash key conflict problems, will check it in the future.
+*/
 unsigned int hash::doHashKey(std::string *key) {
   unsigned int idx = 0;
   unsigned int len = key->length();
@@ -113,7 +103,6 @@ bool hash::hashAddEntry(std::string *key, std::string *value) {
     table[idx] = entry;
   }
   used++;
-//  std::cout<<idx<<std::endl;
   
   return true;
 }
@@ -148,6 +137,28 @@ std::string *hash::getHashValue(std::string *key) {
   return NULL;
 }
 
+bool clearHashResource(hash *ht) {
+  unsigned long idx = 0;
+  hashEntry *entry = NULL, *nextEntry = NULL;
+
+  while(idx < ht->getHashSize()) {
+    entry = (ht->getHashTable())[idx];
+    while(entry != NULL) {
+      if(entry->hashNextEntry()) {
+        nextEntry = entry->hashNextEntry();
+      }
+      std::cout<<"do delete "<<*(entry->hashEntryKey())<<std::endl;
+      delete entry;
+      entry = nextEntry;
+      nextEntry = NULL;
+      ht->decrHashUsed();
+    }
+    idx++;
+  }
+  std::cout<<"do delete ht"<<std::endl;
+  delete ht;
+}
+
 hash *skvdoRehash(hash *oldHt, hash *newHt) {
   unsigned long idx = 0;
   bool ret = true;
@@ -164,7 +175,6 @@ hash *skvdoRehash(hash *oldHt, hash *newHt) {
     idx++;
   }
   delete oldHt;
-  oldHt = NULL;
 
   return newHt;
 }
