@@ -6,23 +6,28 @@
 * Author: Liyinlong (yinlong.lee at hotmail.com)
 */
 
+#include "shash.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <iostream>
 #include <string>
 #include <functional>
-#include "shash.h"
 
 
 using namespace skv;
 
 hashEntry::~hashEntry() {
   delete key;
+  key = NULL;
   delete value;
+  value = NULL;
 }
 
 hash::hash(unsigned long size_) {
   table = static_cast<hashEntry **>(malloc(size_*sizeof(hashEntry)));
+  for(int i=0; i<size_; i++) {
+    table[i] = NULL;
+  }
   size = size_;
   sizeMask = size - 1;
 }
@@ -33,30 +38,18 @@ hash::~hash() {
 
   while(idx < size) {
     entry = table[idx];
-    while(entry != NULL ) {
-      nextEntry = entry->next;
+    while(entry != NULL) {
+      if(entry->next) {
+        nextEntry = entry->next;
+      }
       delete entry;
       entry = nextEntry;
+      nextEntry = NULL;
     }
     idx++;
   }
   free(table);
 }
-
-hashEntry *hash::hashSearchKey(std::string *key) {
-  unsigned long idx = 0;
-  hashEntry *entry = NULL;
-  while(idx < size) {
-    entry = table[idx];
-    if(entry->key == key) {
-      return entry;
-    }
-    idx++;
-  }
-
-  return NULL;
-}
-
 
 unsigned int hash::doHashKey(std::string *key) {
   unsigned int idx = 0;
@@ -106,7 +99,6 @@ unsigned int hash::doHashKey(std::string *key) {
   return idx;
 }
 
-
 bool hash::hashAddEntry(std::string *key, std::string *value) {
   unsigned long idx = 0;
   hashEntry *entry = new hashEntry(key, value);
@@ -120,6 +112,7 @@ bool hash::hashAddEntry(std::string *key, std::string *value) {
   } else {
     table[idx] = entry;
   }
+  used++;
 //  std::cout<<idx<<std::endl;
   
   return true;
@@ -131,38 +124,58 @@ bool hash::hashDelEntry(const std::string *key) {
 
 }
 
-std::string *hash::getHashValue(std::string *key) {
-  return hashSearchKey(key)->hashEntryValue();
+hashEntry *hash::hashSearchKey(std::string *key) {
+  unsigned long idx = 0;
+  hashEntry *entry = NULL;
+  idx = doHashKey(key);
+  entry = table[idx];
+  while(entry != NULL) {
+    if(*(entry->key) == *key) {
+      return entry;
+    } else if(entry->next) {
+      entry = entry->next;
+    } else {
+      return NULL;
+    }
+  }
 }
 
-bool doRehashefk(hash *oldHt, hash *newHt) {
+std::string *hash::getHashValue(std::string *key) {
+  hashEntry *entry = NULL;
+  if((entry = hashSearchKey(key))) {
+    return entry->hashEntryValue();
+  }
+  return NULL;
+}
+
+hash *skvdoRehash(hash *oldHt, hash *newHt) {
   unsigned long idx = 0;
   bool ret = true;
-  hashEntry *entry = NULL, *nextEntry = NULL;
+  hashEntry *entry = NULL;
   while(idx < oldHt->getHashSize()) {
     entry = (oldHt->getHashTable())[idx];
     while(entry != NULL ) {
-      nextEntry = entry->hashNextEntry();
       if(!(newHt->hashAddEntry(entry->hashEntryKey(), entry->hashEntryValue()))) {
         std::cout<<"reHashing err occured!"<< std::endl;
-        return false;
+        return NULL;
       }
-      entry = nextEntry;
+      entry = entry->hashNextEntry();
     }
     idx++;
   }
   delete oldHt;
+  oldHt = NULL;
 
-  return true;
+  return newHt;
 }
 
-bool hashExpandIfNeeded(hash *ht) {
+hash *hashExpandIfNeeded(hash *ht) {
   unsigned int newSize = 0;
   if(ht->getHashUsed() >= ht->getHashSize()) {
     newSize = ht->getHashSize() * 2;
     hash *newHt = new hash(newSize);
-    return doRehashefk(ht, newHt);
+    return skvdoRehash(ht, newHt); // return newHt
   }
 
-  return true;  // no need to expand hash table
+  return ht;  // no need to expand hash table
 }

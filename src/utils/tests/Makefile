@@ -1,6 +1,6 @@
 testslist:
 	g++ -g ../slist.cc testslist.cc -I ../
 testshash:
-	g++ -g ../shash.cc testshash.cc -I ../
+	g++ -g -std=c++11 ../shash.cc testshash.cc -I ../
 clean:
 	rm -rf *.out core

@@ -1,7 +1,9 @@
+
+#include "shash.h"
+
 #include <stdlib.h>
 #include <iostream>
 
-#include "shash.h"
 
 int main() {
   std::string *str_ =  new std::string("abc");

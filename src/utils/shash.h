@@ -17,12 +17,13 @@ namespace skv {
 
 class hash;
 
+
 typedef class hashEntry {
   public:
     friend class hash;
     explicit hashEntry(std::string *key_,std::string *val)
       : key(key_), 
-        value(val) {}
+        value(val) { next = NULL; }
     ~hashEntry();
     hashEntry *hashNextEntry() const { return next; }
     std::string *hashEntryKey() const { return key; }
@@ -57,11 +58,10 @@ typedef class hash {
 } hash;
 
 
-bool doRehash(hash *oldHt, hash *newHt);
-bool hashExpandIfNeeded(hash *ht);
-
 }
 
+skv::hash *doRehash(skv::hash *oldHt, skv::hash *newHt);
+skv::hash *hashExpandIfNeeded(skv::hash *ht);
 
 #endif // __SHASH_H__
 
