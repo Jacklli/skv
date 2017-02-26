@@ -35,6 +35,7 @@ hash::hash(unsigned long size_) {
 
 hash::~hash() {
   free(table);
+  table = NULL;
 }
 
 /*
@@ -147,7 +148,7 @@ bool clearHashResource(hash *ht) {
       if(entry->hashNextEntry()) {
         nextEntry = entry->hashNextEntry();
       }
-      std::cout<<"do delete "<<*(entry->hashEntryKey())<<std::endl;
+//      std::cout<<"do delete "<<*(entry->hashEntryKey())<<std::endl;
       delete entry;
       entry = nextEntry;
       nextEntry = NULL;
@@ -155,7 +156,7 @@ bool clearHashResource(hash *ht) {
     }
     idx++;
   }
-  std::cout<<"do delete ht"<<std::endl;
+//  std::cout<<"do delete ht"<<std::endl;
   delete ht;
 }
 

@@ -1,14 +1,14 @@
 
+#include "shash.h"
 #include <stdlib.h>
 #include <iostream>
 #include <time.h>
-#include "shash.h"
 
-const int keyNums = 1000;
+const int keyNums = 5000;
 
 int main() {
-  std::string *key[10] =  { NULL };
-  std::string *value[10] = { NULL };
+  std::string *key[keyNums] =  { NULL };
+  std::string *value[keyNums] = { NULL };
   skv::hash *ht = new skv::hash(30);
   bool ret = true;
 
