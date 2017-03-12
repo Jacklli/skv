@@ -1,14 +1,13 @@
-
 #include "slist.h"
-
-#include <stdlib.h>
 #include <iostream>
+#include <stdlib.h>
+#include <jemalloc/jemalloc.h>
 
 
 int main() {
-  std::string *str_ =  new std::string("abc");
-  std::string *str_1 = new std::string("efg");
-  std::string *str_2 = new std::string("hij");
+  std::string *str_ =  new std::string("abcDDDJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJDDDDDDDDDDDDDDDD");
+  std::string *str_1 = new std::string("efgkKKKKKKKKKKIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIKKKKKKKKkk");
+  std::string *str_2 = new std::string("hijIIIIIIIIIIIIIIIIIIIIIIIIIIISDFFFFFFDDDDDDDDDDDDDDDDDDDDDDDDDDDdII");
   skv::list *lst = new skv::list();
 
   lst->listAddNodeTail(str_);
