@@ -25,6 +25,10 @@ int main() {
   std::cout<<*str1<<std::endl;
   std::cout<<*str2<<std::endl;
   std::cout<<"now list len is:"<<lst->getListLen()<<std::endl;
+  delete str;
+  delete str1;
+  delete str2;
+  delete lst;
 
   return 1;
 }
